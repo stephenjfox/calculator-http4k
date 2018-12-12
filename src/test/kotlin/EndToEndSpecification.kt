@@ -9,12 +9,12 @@ import org.http4k.core.Request
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
 import org.http4k.server.Http4kServer
-import java.util.*
+import kotlin.random.Random
 
 class EndToEndSpecification : DescribeSpec({
 
     val makeServer: (port: Int) -> Http4kServer = ::MyMathsServer
-    val randomInt: () -> Int = { Random().nextInt(1000) + 8000 }
+    val randomInt: () -> Int = { Random.nextInt(1000) + 8000 }
 
 
     describe("Server interactions") {
@@ -51,7 +51,8 @@ class AddFunctionalitySpecification : StringSpec({
 
 
 fun serverClosed(server: Http4kServer, function: () -> Unit): TestContext.() -> Unit = {
-    server.start()
-    function()
-    server.stop()
+    server.use {
+        it.start()
+        function()
+    }
 }
